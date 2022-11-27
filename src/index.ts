@@ -103,7 +103,7 @@ client.on("interactionCreate", async (interaction) => {
         const guild = interaction.guild;
         const interactionId = interaction.id;
         const timestamp = Date.now();
-        const seed = { one: guild!.id, two: roleId!, three: member.user.id };
+        const seed = { guildId: guild!.id, roleId: roleId!, userId: member.user.id };
         const seedString = JsonURL.stringify(seed);
         const urlEnd = encode(seedString!);
         interaction.reply({
