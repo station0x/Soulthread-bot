@@ -113,7 +113,7 @@ client.on("interactionCreate", async (interaction) => {
           // signing message
           timestamp, 
           interactionId, 
-          guildeName: guild!.name,
+          guildName: guild!.name,
           user: `${member.user.username + '#' + member.user.discriminator}`
         };
         const seedString = JsonURL.stringify(seed);
