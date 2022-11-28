@@ -10,23 +10,24 @@ import {
   GuildMember,
   GuildTextBasedChannel,
   inlineCode,
-  JSONEncodable,
   PermissionFlagsBits,
   Routes,
   SlashCommandBuilder,
-  User,
 } from "discord.js";
 import { REST } from "discord.js";
 import { encode } from "js-base64";
 import JsonURL from "@jsonurl/jsonurl";
 import { request } from "undici";
-import { url } from "inspector";
-const wait = require('node:timers/promises').setTimeout;
+const wait = require("node:timers/promises").setTimeout;
 
-const { BOT_TOKEN, CLIENT_ID, ROLE_ID1 } = process.env;
+const { BOT_TOKEN, CLIENT_ID } = process.env;
 
-// if "dev" --> Use host http://localhost:3000 for testing, else use https://soulthread.xyz (Add ENV="dev" to local .env)
-const host = process.env.ENV === "dev" ? "http://localhost:3000" : "https://soulthread.xyz"
+// if "dev" --> Use host http://localhost:3000 for testing, else use https://soulthread.xyz (Add HOST="dev" to local .env)
+
+const host =
+  process.env.HOST === "dev"
+    ? "http://localhost:3000"
+    : "https://soulthread.xyz";
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN!);
@@ -45,18 +46,13 @@ client.on("interactionCreate", async (interaction) => {
           embeds: [
             new EmbedBuilder()
               .setDescription(
-                `Verify with SoulThread by clicking the 'Verify' button below.\nConnect your wallet with SoulThread by clicking the 'Connect' button below.`
+                `Connect your wallet with SoulThread by clicking the 'Connect' button below.`
               )
               .setColor("Navy")
               .setTitle(`Welcome to ${interaction.guild!.name}`),
           ],
           components: [
             new ActionRowBuilder<ButtonBuilder>().setComponents(
-              new ButtonBuilder()
-                .setCustomId("verifyMember")
-                .setLabel("Verify")
-                .setStyle(ButtonStyle.Success)
-                .setEmoji("<:check:338071972476878848>"),
               new ButtonBuilder()
                 .setCustomId("connectMember")
                 .setLabel("Connect")
@@ -69,36 +65,110 @@ client.on("interactionCreate", async (interaction) => {
             ),
           ],
         });
+        interaction.reply({
+          content: `Soulthread Embed Successfully deployed in channel: ${channel}!`,
+          ephemeral: false,
+        });
+        break;
+      }
+      case "connect": {
+        console.log("Connecting Member...");
+        const member = interaction.member as GuildMember;
+        const roleId = process.env.ROLE_ID1;
+        const guild = interaction.guild;
+        const interactionId = interaction.id;
+        const timestamp = Date.now();
+        const seed = {
+          guildId: guild!.id,
+          roleId: roleId!,
+          userId: member.user.id,
+          // signing message
+          timestamp,
+          interactionId,
+          guildName: guild!.name,
+          user: `${member.user.username + "#" + member.user.discriminator}`,
+        };
+        const seedString = JsonURL.stringify(seed);
+        const urlEnd = encode(seedString!);
+        interaction.reply({
+          content: `This link will only be valid for 5 minutes\nGuild: ${
+            guild!.id
+          } Member: ${member.id}`,
+          embeds: [
+            new EmbedBuilder()
+              .setAuthor({
+                name: "SoulThread Bot",
+                iconURL:
+                  "https://cdn.discordapp.com/attachments/1043182694307209296/1045898372239859742/2.png",
+              })
+              .setDescription(
+                "You should expect to sign the following message when prompted by a non-custodial wallet such as MetaMask:\n" +
+                  "```" +
+                  `SoulThread (${host}) asks you to sign this message for the purpose of verifying your account ownership. 
+                  This is READ-ONLY access and will NOT trigger any blockchain transactions or incur any fees. \n\n- Community: ${
+                    guild!.name
+                  } \n- User: ${member.user.username}#${
+                    member.user.discriminator
+                  } \n- Discord Interaction: ${interactionId} \n- Timestamp: ${timestamp} \n` +
+                  "```" +
+                  "\n**Make sure you sign the EXACT message (some wallets may use " +
+                  inlineCode("\\n") +
+                  " for new lines) and NEVER share your seed phrase or private key.**"
+              )
+              .setColor("Gold")
+              .setTitle(`Please read instructions carefully before connecting`),
+          ],
+          components: [
+            new ActionRowBuilder<ButtonBuilder>().setComponents(
+              new ButtonBuilder()
+                .setLabel("Connect Wallet")
+                .setStyle(ButtonStyle.Link)
+                .setURL(`${host}/verify/` + urlEnd)
+            ),
+          ],
+          ephemeral: false,
+        });
+        let gatedRoles;
+        while (!gatedRoles && Date.now() - timestamp < 300000) {
+          try {
+            await wait(333);
+            let result = await request(
+              `${host}/api/isVerifiedForRole/` + urlEnd
+            );
+            let { roleArray } = await result.body.json();
+            gatedRoles = roleArray;
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        console.log("Verifying Member...");
+        if (gatedRoles instanceof Array && gatedRoles.length > 0) {
+          if (gatedRoles.length == 0) {
+            const member = interaction.member as GuildMember;
 
+            gatedRoles.forEach(grantRole);
+            function grantRole(role: string) {
+              member.roles.add(role);
+            }
+            interaction.followUp({
+              content: `You now have the folowwing role(s): ${gatedRoles.toString}.  Thanks for your support!`,
+              ephemeral: false,
+            });
+          }
+        } else if (gatedRoles == 0) {
+          interaction.followUp(
+            "Apologies, you do not qualify for any roles, yet."
+          );
+        } else {
+          interaction.followUp(
+            "The SoulThread Bot did not receive a Role Array from the API after using the '/connect' command. Please notify a server admin"
+          );
+        }
         break;
       }
     }
   } else if (interaction.isButton()) {
     switch (interaction.customId) {
-      case "verifyMember": {
-        console.log("Verifying Member...");
-        const role = interaction.guild?.roles.cache.get(ROLE_ID1!);
-        if (!role) {
-          console.log("Role does not exist");
-          return;
-        }
-        const member = interaction.member as GuildMember;
-        member.roles
-          .add(role)
-          .then((m) =>
-            interaction.reply({
-              content: `The ${role} role was assigned to you. Thanks for your support!`,
-              ephemeral: false,
-            })
-          )
-          .catch((err) =>
-            interaction.reply({
-              content: `Something went wrong`,
-              ephemeral: false,
-            })
-          );
-        break;
-      }
       case "connectMember": {
         console.log("Connecting Member...");
         const member = interaction.member as GuildMember;
@@ -106,15 +176,15 @@ client.on("interactionCreate", async (interaction) => {
         const guild = interaction.guild;
         const interactionId = interaction.id;
         const timestamp = Date.now();
-        const seed = { 
-          guildId: guild!.id, 
-          roleId: roleId!, 
+        const seed = {
+          guildId: guild!.id,
+          roleId: roleId!,
           userId: member.user.id,
           // signing message
-          timestamp, 
-          interactionId, 
+          timestamp,
+          interactionId,
           guildName: guild!.name,
-          user: `${member.user.username + '#' + member.user.discriminator}`
+          user: `${member.user.username + "#" + member.user.discriminator}`,
         };
         const seedString = JsonURL.stringify(seed);
         const urlEnd = encode(seedString!);
@@ -155,46 +225,41 @@ client.on("interactionCreate", async (interaction) => {
           ],
           ephemeral: false,
         });
-        let bool;
-        while (!bool && (Date.now() - timestamp) < 30000) {
+        let gatedRoles;
+        while (!gatedRoles && Date.now() - timestamp < 300000) {
           try {
-          await wait(333);
-          let result = await request(`${host}/api/isVerifiedForRole/` + urlEnd);
-          let { bool } = await result.body.json();
-          console.log(`${host}/api/isVerifiedForRole/` + urlEnd);
-          }
-          catch (err) {
+            await wait(333);
+            let result = await request(
+              `${host}/api/isVerifiedForRole/` + urlEnd
+            );
+            let { roleArray } = await result.body.json();
+            gatedRoles = roleArray;
+          } catch (err) {
             console.log(err);
           }
         }
         console.log("Verifying Member...");
-        if (bool == true) {
-        const role = interaction.guild?.roles.cache.get(ROLE_ID1!);
-        if (!role) {
-          console.log("Role does not exist");
-          return;
-        }
-        const member = interaction.member as GuildMember;
-        member.roles
-          .add(role)
-          .then((m) =>
+        if (gatedRoles instanceof Array && gatedRoles.length > 0) {
+          if (gatedRoles.length == 0) {
+            const member = interaction.member as GuildMember;
+
+            gatedRoles.forEach(grantRole);
+            function grantRole(role: string) {
+              member.roles.add(role);
+            }
             interaction.followUp({
-              content: `The ${role} role was assigned to you. Thanks for your support!`,
+              content: `You now have the folowwing role(s): ${gatedRoles.toString}.  Thanks for your support!`,
               ephemeral: false,
-            })
-          )
-          .catch((err) =>
-            interaction.followUp({
-              content: `Something went wrong`,
-              ephemeral: false,
-            })
+            });
+          }
+        } else if (gatedRoles == 0) {
+          interaction.followUp(
+            "Apologies, you do not qualify for any roles, yet."
           );
-        }
-        else if (bool == false) {
-          interaction.followUp("Apologies, you do not qualify for that role")
-        }
-        else {
-          interaction.followUp("The SoulThread API returned a null boolean value. Please notify a server admin")
+        } else {
+          interaction.followUp(
+            "The SoulThread Bot did not receive a Role Array from the API after using the 'Connect' button. Please notify a server admin"
+          );
         }
         break;
       }
@@ -217,6 +282,9 @@ client.on("interactionCreate", async (interaction) => {
               .addChannelTypes(ChannelType.GuildText)
               .setRequired(true)
           ),
+          new SlashCommandBuilder()
+            .setName("connect")
+            .setDescription("Connect to SoulThread"),
       ],
     });
     await client.login(BOT_TOKEN);
