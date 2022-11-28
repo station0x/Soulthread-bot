@@ -25,6 +25,9 @@ const wait = require('node:timers/promises').setTimeout;
 
 const { BOT_TOKEN, CLIENT_ID, ROLE_ID1 } = process.env;
 
+// if "dev" --> Use host http://localhost:3000 for testing, else use https://soulthread.xyz (Add ENV="dev" to local .env)
+const host = process.env.ENV === "dev" ? "http://localhost:3000" : "https://soulthread.xyz"
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN!);
 
@@ -103,7 +106,16 @@ client.on("interactionCreate", async (interaction) => {
         const guild = interaction.guild;
         const interactionId = interaction.id;
         const timestamp = Date.now();
-        const seed = { guildId: guild!.id, roleId: roleId!, userId: member.user.id };
+        const seed = { 
+          guildId: guild!.id, 
+          roleId: roleId!, 
+          userId: member.user.id,
+          // signing message
+          timestamp, 
+          interactionId, 
+          guildeName: guild!.name,
+          user: `${member.user.username + '#' + member.user.discriminator}`
+        };
         const seedString = JsonURL.stringify(seed);
         const urlEnd = encode(seedString!);
         interaction.reply({
@@ -120,7 +132,7 @@ client.on("interactionCreate", async (interaction) => {
               .setDescription(
                 "You should expect to sign the following message when prompted by a non-custodial wallet such as MetaMask:\n" +
                   "```" +
-                  `Soul Thread (connect.soulthread.xyz) asks you to sign this message for the purpose of verifying your account ownership. This is READ-ONLY access and will NOT trigger any blockchain transactions or incur any fees. \n\n- Community: ${
+                  `SoulThread (${host}) asks you to sign this message for the purpose of verifying your account ownership. This is READ-ONLY access and will NOT trigger any blockchain transactions or incur any fees. \n\n- Community: ${
                     guild!.name
                   } \n- User: ${member.user.username}#${
                     member.user.discriminator
@@ -138,7 +150,7 @@ client.on("interactionCreate", async (interaction) => {
               new ButtonBuilder()
                 .setLabel("Connect Wallet")
                 .setStyle(ButtonStyle.Link)
-                .setURL("http://soulthread.xyz/verify/" + urlEnd)
+                .setURL(`${host}/verify/` + urlEnd)
             ),
           ],
           ephemeral: false,
@@ -147,9 +159,9 @@ client.on("interactionCreate", async (interaction) => {
         while (!bool && (Date.now() - timestamp) < 30000) {
           try {
           await wait(333);
-          let result = await request("soulthread.xyz/api/isVerifiedForRole/" + urlEnd);
+          let result = await request(`${host}/api/isVerifiedForRole/` + urlEnd);
           let { bool } = await result.body.json();
-          console.log("soulthread.xyz/api/isVerifiedForRole/" + urlEnd);
+          console.log(`${host}/api/isVerifiedForRole/` + urlEnd);
           }
           catch (err) {
             console.log(err);
