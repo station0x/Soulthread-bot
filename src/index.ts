@@ -155,7 +155,7 @@ client.on("interactionCreate", async (interaction) => {
               ephemeral: false,
             });
           }
-        } else if (gatedRoles == 0) {
+        } else if (gatedRoles.length == 0) {
           interaction.followUp(
             "Apologies, you do not qualify for any roles, yet."
           );
