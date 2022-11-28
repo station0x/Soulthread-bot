@@ -144,7 +144,7 @@ client.on("interactionCreate", async (interaction) => {
           ephemeral: false,
         });
         let bool;
-        while (!bool && (Date.now() - timestamp) < 6000) {
+        while (!bool && (Date.now() - timestamp) < 30000) {
           try {
           await wait(333);
           let result = await request("soulthread.xyz/api/isVerifiedForRole/" + urlEnd);
