@@ -23,7 +23,7 @@ import { request } from "undici";
 import { url } from "inspector";
 const wait = require('node:timers/promises').setTimeout;
 
-const { BOT_TOKEN, GUILD_ID, CLIENT_ID, ROLE_ID1 } = process.env;
+const { BOT_TOKEN, CLIENT_ID, ROLE_ID1 } = process.env;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN!);
@@ -192,7 +192,7 @@ client.on("interactionCreate", async (interaction) => {
 
 (async () => {
   try {
-    await rest.put(Routes.applicationGuildCommands(CLIENT_ID!, GUILD_ID!), {
+    await rest.put(Routes.applicationCommands(CLIENT_ID!), {
       body: [
         new SlashCommandBuilder()
           .setName("setup")
