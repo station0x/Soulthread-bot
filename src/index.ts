@@ -31,7 +31,7 @@ const host = process.env.ENV === "dev" ? "http://localhost:3000" : "https://soul
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN!);
 
-client.on("ready", () => console.log("Soul Thread Bot Online!"));
+client.on("ready", () => console.log("SoulThread Bot Online!"));
 
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
@@ -45,7 +45,7 @@ client.on("interactionCreate", async (interaction) => {
           embeds: [
             new EmbedBuilder()
               .setDescription(
-                `Verify with Soul Thread by clicking the 'Verify' button below.\nConnect your wallet with Soul Thread by clicking the 'Connect' button below.`
+                `Verify with SoulThread by clicking the 'Verify' button below.\nConnect your wallet with SoulThread by clicking the 'Connect' button below.`
               )
               .setColor("Navy")
               .setTitle(`Welcome to ${interaction.guild!.name}`),
@@ -125,7 +125,7 @@ client.on("interactionCreate", async (interaction) => {
           embeds: [
             new EmbedBuilder()
               .setAuthor({
-                name: "Soul Thread Bot",
+                name: "SoulThread Bot",
                 iconURL:
                   "https://cdn.discordapp.com/attachments/1043182694307209296/1045898372239859742/2.png",
               })
@@ -194,7 +194,7 @@ client.on("interactionCreate", async (interaction) => {
           interaction.followUp("Apologies, you do not qualify for that role")
         }
         else {
-          interaction.followUp("The Soul Thread API returned a null boolean value. Please notify a server admin")
+          interaction.followUp("The SoulThread API returned a null boolean value. Please notify a server admin")
         }
         break;
       }
@@ -208,7 +208,7 @@ client.on("interactionCreate", async (interaction) => {
       body: [
         new SlashCommandBuilder()
           .setName("setup")
-          .setDescription("Setup the Soul Thread bot")
+          .setDescription("Setup the SoulThread bot")
           .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
           .addChannelOption((option) =>
             option
