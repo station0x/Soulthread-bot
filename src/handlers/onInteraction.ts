@@ -13,9 +13,9 @@ export const onInteraction = async (interaction: Interaction) => {
         break;
       }
     }
-  } else 
+  }
   // Run button interactions
-  if (interaction.isButton()) {
+  else if (interaction.isButton()) {
     switch (interaction.customId) {
       // Soul Bond Button
       case "soulBond": {

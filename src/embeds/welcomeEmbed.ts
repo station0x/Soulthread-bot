@@ -1,12 +1,20 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+  ButtonInteraction,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} from "discord.js";
 
 // Create the Weclome Embed, passing it the command interaction
 
-export function welcomeEmbed(interaction: ChatInputCommandInteraction) {
-    // Create the initial embed
-    const embed = new EmbedBuilder()
+export function welcomeEmbed(
+  interaction: ChatInputCommandInteraction | ButtonInteraction
+) {
+  // Create the initial embed
+  const embed = new EmbedBuilder()
     // Embed Thumbnail
-    .setThumbnail("https://cdn.discordapp.com/attachments/1043182694307209296/1045898372239859742/2.png")
+    .setThumbnail(
+      "https://cdn.discordapp.com/attachments/1043182694307209296/1045898372239859742/2.png"
+    )
     // Embed Author
     .setAuthor({
       name: "SoulThread Bot",
@@ -14,10 +22,10 @@ export function welcomeEmbed(interaction: ChatInputCommandInteraction) {
         "https://cdn.discordapp.com/attachments/1043182694307209296/1045898372239859742/2.png",
     })
     // Embed Description
-      .setDescription(
-        `Start the soulbinding process by clicking the 'Soulbind' button below.`
-      )
-      .setColor("Aqua") // Embed Color
-      .setTitle(`Welcome to ${interaction.guild!.name}`); // Embed Title
-      return embed; // return the embed
+    .setDescription(
+      `Start the soulbinding process by clicking the 'Soulbind' button below.`
+    )
+    .setColor("Aqua") // Embed Color
+    .setTitle(`Welcome to ${interaction.guild!.name}`); // Embed Title
+  return embed; // return the embed
 }

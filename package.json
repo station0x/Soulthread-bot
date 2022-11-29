@@ -2,9 +2,10 @@
   "name": "soulthread-bot",
   "version": "0.9.0",
   "description": "A bot to interface with the Soul Thread API",
-  "main": "index.js",
+  "main": "prod/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node prod/index.js"
   },
   "author": "Station Zero X",
   "license": "UNLICENSED",
@@ -12,9 +13,9 @@
     "@jsonurl/jsonurl": "^1.1.7",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
+    "js-base64": "^3.7.3",
     "tsc": "^2.0.4",
-    "undici": "^5.13.0",
-    "js-base64": "^3.7.3"
+    "undici": "^5.13.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

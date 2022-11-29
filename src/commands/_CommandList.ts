@@ -4,4 +4,4 @@ import { soulBond } from "../commands/soulBond";
 
 // Export a Command Array of the slash commands
 
-export const CommandList: Command[] = [ setup, soulBond ];
+export const CommandList: Command[] = [setup, soulBond];

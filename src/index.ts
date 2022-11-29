@@ -1,33 +1,28 @@
 import "dotenv/config";
 import { Client, GatewayIntentBits } from "discord.js";
-import { REST } from "discord.js";
-import { encode } from "js-base64";
-import JsonURL from "@jsonurl/jsonurl";
-import { request } from "undici";
-
 import { onReady } from "./handlers/onReady";
 import { validateEnv } from "./utils/validateEnv";
 import { onInteraction } from "./handlers/onInteraction";
-const wait = require("node:timers/promises").setTimeout;
 
-// if "dev" --> Use host http://localhost:3000 for testing, else use https://soulthread.xyz (Add HOST="dev" to local .env)
-
-const host =
-  process.env.HOST === "dev"
-    ? "http://localhost:3000"
-    : "https://soulthread.xyz";
+// Index file
 
 (async () => {
   try {
+    // Check validity of .env file
     if (!validateEnv()) return;
+    // create bot object
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+    // load the onReady handler
     client.on("ready", async () => await onReady(client));
+    // load the onInteraction handler
     client.on(
       "interactionCreate",
       async (interaction) => await onInteraction(interaction)
     );
+    // log the bot in
     await client.login(process.env.BOT_TOKEN);
   } catch (err) {
+    // log any errors
     console.log(err);
   }
 })();
