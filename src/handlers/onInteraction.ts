@@ -1,9 +1,11 @@
-import { ChatInputCommandInteraction, Interaction } from "discord.js";
+import { Interaction } from "discord.js";
 import { CommandList } from "../commands/_CommandList";
-import { soulContractButtonRun } from "../buttons/soulContract";
+import { soulBondButtonRun } from "../buttons/soulBond";
+
+// Handle all interaction events with this file
 
 export const onInteraction = async (interaction: Interaction) => {
-  console.log(interaction)
+  // Run slash commands
   if (interaction.isChatInputCommand()) {
     for (const Command of CommandList) {
       if (interaction.commandName === Command.data.name) {
@@ -11,10 +13,13 @@ export const onInteraction = async (interaction: Interaction) => {
         break;
       }
     }
-  } else if (interaction.isButton()) {
+  } else 
+  // Run button interactions
+  if (interaction.isButton()) {
     switch (interaction.customId) {
-      case "soulContract": {
-        soulContractButtonRun(interaction);
+      // Soul Bond Button
+      case "soulBond": {
+        soulBondButtonRun(interaction);
         break;
       }
     }

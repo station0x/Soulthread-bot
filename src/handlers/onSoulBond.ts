@@ -1,7 +1,7 @@
 import { ButtonInteraction, ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { encode } from "js-base64";
 import JsonURL from "@jsonurl/jsonurl";
-import { contractEmbed } from "../embeds/contractEmbed";
+import { bondEmbed } from "../embeds/bondEmbed";
 import { soulbindButtonData } from "../buttons/soulbind";
 import { checkRoles } from "../utils/checkRoles";
 
@@ -31,7 +31,7 @@ export async function soulbind(interaction: ButtonInteraction|ChatInputCommandIn
     const urlEnd = encode(seedString!);
     interaction.reply({
       content: `This link will only be valid for 5 minutes\nGuild: ${guildId} Member: ${userId}`,
-      embeds: [ contractEmbed(host, guildName, username, interactionId, timestamp) ],
+      embeds: [ bondEmbed(host, guildName, username, interactionId, timestamp) ],
       components: [ soulbindButtonData(`${host}/verify/${urlEnd}`) ],
       ephemeral: false,
     });

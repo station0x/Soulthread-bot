@@ -1,5 +1,7 @@
 import { Command } from "./_Command";
 import { setup } from "../commands/setup";
-import { soulContract } from "../commands/soulContract";
+import { soulBond } from "../commands/soulBond";
 
-export const CommandList: Command[] = [ setup, soulContract ];
+// Export a Command Array of the slash commands
+
+export const CommandList: Command[] = [ setup, soulBond ];
