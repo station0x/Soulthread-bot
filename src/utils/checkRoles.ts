@@ -21,12 +21,14 @@ export async function checkRoles(
       // create and run a 3.33 second timer
       const wait = require("node:timers/promises").setTimeout;
       await wait(333);
-      // make an API request for the roles the user qualifies for
-      let result = await request(`${host}/api/isEligable/` + urlEnd);
+      // make an API request for the roles the user qualifies for (subscribing for member verification result)
+      const isVerified = new URL(`${host}/api/isVerifiedForRole/`)
+      isVerified.searchParams.set("userHash", require('crypto').createHash('sha256').update(urlEnd).digest("hex"))
+      let { body } = await request(isVerified);
       // pull the rolesArray from the JSON the API sends back
-      let { roleArray } = await result.body.json();
+      let { rolesPassed } = await body.json();
       // assign gatedRoles the role array received from the API
-      gatedRoles = roleArray;
+      gatedRoles = rolesPassed;
     } catch (err) {
       // log any errors
       console.log(err);
