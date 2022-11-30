@@ -1,6 +1,8 @@
 import { Interaction } from "discord.js";
 import { CommandList } from "../commands/_CommandList";
 import { soulBondButtonRun } from "../buttons/soulBond";
+import { handleWelcomeEmbed } from "./onSetup";
+import { setupButtonRun } from "../buttons/setup";
 
 // Handle all interaction events with this file
 
@@ -20,6 +22,21 @@ export const onInteraction = async (interaction: Interaction) => {
       // Soul Bond Button
       case "soulBond": {
         soulBondButtonRun(interaction);
+        break;
+      }
+      case "setup": {
+        setupButtonRun(interaction);
+      }
+    }
+  }
+  // Run select menu interactions
+  else if (interaction.isSelectMenu()) {
+    switch (interaction.customId) {
+      // Channel select menu from the admin embed
+      case "channelSelect": {
+        const channel = interaction.guild!.channels.cache.get(interaction.values[0]);
+        // Send the Welcome Embed to the selected channel
+        handleWelcomeEmbed(interaction, channel!)
         break;
       }
     }

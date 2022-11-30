@@ -1,13 +1,13 @@
 import {
-  ButtonInteraction,
   ChatInputCommandInteraction,
   EmbedBuilder,
+  SelectMenuInteraction,
 } from "discord.js";
 
 // Create the Weclome Embed, passing it the command interaction
 
 export function welcomeEmbed(
-  interaction: ChatInputCommandInteraction | ButtonInteraction
+  interaction: ChatInputCommandInteraction | SelectMenuInteraction
 ) {
   // Create the initial embed
   const embed = new EmbedBuilder()

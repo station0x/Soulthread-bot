@@ -1,5 +1,5 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
-import { handleWelcomeEmbed } from "../handlers/onSetup";
+import { channelSelect } from "../utils/channelSelect";
 
 // Create a function that takes a variable to create a Setup button
 
@@ -16,5 +16,5 @@ export const setupButtonData = () => {
 // Create a function that runs when the Setup button is pressed
 
 export function setupButtonRun(interaction: ButtonInteraction) {
-  //handleWelcomeEmbed(interaction, channel);
+  channelSelect(interaction);
 }
