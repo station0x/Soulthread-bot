@@ -22,7 +22,7 @@ export async function checkRoles(
       const wait = require("node:timers/promises").setTimeout;
       await wait(333);
       // make an API request for the roles the user qualifies for
-      let result = await request(`${host}/api/isVerifiedForRole/` + urlEnd);
+      let result = await request(`${host}/api/isEligable/` + urlEnd);
       // pull the rolesArray from the JSON the API sends back
       let { roleArray } = await result.body.json();
       // assign gatedRoles the role array received from the API
