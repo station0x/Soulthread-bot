@@ -16,5 +16,6 @@ export const setupButtonData = () => {
 // Create a function that runs when the Setup button is pressed
 
 export function setupButtonRun(interaction: ButtonInteraction) {
+  // Run the channelSelect function to send the Channel Select Menu
   channelSelect(interaction);
 }
