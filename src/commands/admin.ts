@@ -24,6 +24,6 @@ export const admin: Command = {
         "channel"
       ) as GuildTextBasedChannel;
       // Run the handleWelcomeEmbed to create and send the Welcome Embed
-      handleAdminEmbed(interaction, channel);
+      handleAdminEmbed(channel, interaction);
     },
   };

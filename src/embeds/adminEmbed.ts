@@ -7,7 +7,7 @@ import {
   // Create the Weclome Embed, passing it the command interaction
   
   export function adminEmbed(
-    interaction: ChatInputCommandInteraction | ButtonInteraction
+    guildName: string
   ) {
     // Create the initial embed
     const embed = new EmbedBuilder()
@@ -23,10 +23,10 @@ import {
       })
       // Embed Description
       .setDescription(
-        `Send the Welcome Embed to a channel of you choosing with the **setup** button below.`
+        `Use the **Setup** button below to send the Welcome Embed to a channel of your choosing!.`
       )
       .setColor("Aqua") // Embed Color
-      .setTitle(`Welcome to ${interaction.guild!.name}`); // Embed Title
-    return embed; // return the embed
+      .setTitle(`Welcome to ${guildName}`); // Embed Title
+    return embed; // return the embed 
   }
   

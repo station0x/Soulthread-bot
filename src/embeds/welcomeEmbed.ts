@@ -23,7 +23,7 @@ export function welcomeEmbed(
     })
     // Embed Description
     .setDescription(
-      `Start the soulbinding process by clicking the 'Soulbind' button below.`
+      `Start the soulbinding process by clicking the 'Soul Bond' button below.`
     )
     .setColor("Aqua") // Embed Color
     .setTitle(`Welcome to ${interaction.guild!.name}`); // Embed Title

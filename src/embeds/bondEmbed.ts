@@ -13,7 +13,7 @@ export function bondEmbed(
   timestamp: number
 ) {
   // Create the message text that users will see when connecting with a non-custodial wallet
-  const rawBond = `Soulthread (${host}) asks you to sign this message for the purpose of verifying your account ownership. This is READ-ONLY access and will NOT trigger any blockchain transactions or incur any fees. \n\n- Community: ${guildName} \n- User: ${username} \n- Discord Interaction: ${interactionId} \n- Timestamp: ${timestamp} \n`;
+  const rawBond = `SoulThread (${host}) requires verification of account ownership.\n\n Username: ${username} \n Server Name: ${guildName} \n Interaction ID: ${interactionId} \n Raw Timestamp: ${timestamp} \n\nThis Soul Bond (message) is READ-ONLY access and has NO GAS FEE associated with it. Please sign this Soul Bond (message) to verify with SoulThread`;
 
   // Create initiate embed
   const embed = new EmbedBuilder()
@@ -25,7 +25,7 @@ export function bondEmbed(
     })
     // Embed Description explaining the connection message
     .setDescription(
-      "You should get a Soul Bond to sign when Soulbinding to a non-custodial wallet like MetaMask:\n" +
+      "You should get a Soul Bond (message) to sign when Soulbinding to a non-custodial wallet like MetaMask:\n" +
         // add Bond message text
         codeBlock(rawBond) +
         "\n**Make sure you sign the EXACT Bond, you don't want to lose your soul over nothing.(some wallets may use " +

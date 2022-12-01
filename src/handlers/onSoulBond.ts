@@ -2,6 +2,9 @@ import {
   ButtonInteraction,
   ChatInputCommandInteraction,
   GuildMember,
+  GuildBasedChannel,
+  TextChannel,
+  GuildTextBasedChannel
 } from "discord.js";
 import { encode } from "js-base64";
 import JsonURL from "@jsonurl/jsonurl";
@@ -16,7 +19,6 @@ export async function soulBondHandler(
   interaction: ButtonInteraction | ChatInputCommandInteraction
 ) {
   // Report to console and load variables
-  console.log("Creating a Soul Bond...");
   const host = await getHost(); // get host variable
   const member = interaction.member as GuildMember; // get Member variable
   const username = `${member.user.username + "#" + member.user.discriminator}`; // create username string
@@ -25,6 +27,16 @@ export async function soulBondHandler(
   const guildId = interaction.guild!.id; // get server(guild) ID
   const interactionId = interaction.id; // get interaction ID
   const timestamp = Date.now(); // create timestamp
+  const adminChannel = interaction.guild!.channels.cache.find((ch: { name: string; }) => ch.name === 'soulthread-admin') as GuildTextBasedChannel;
+  const message = `Creating Soul Bond for ${username}, timestamp: ${timestamp}`
+
+  console.log(message);
+
+  if (adminChannel) {
+      adminChannel.send(message);
+  } else {
+    console.log("No Admin Channel");
+  }
 
   // create the JSON file with info for the API
   const seed = {
@@ -48,5 +60,5 @@ export async function soulBondHandler(
   });
 
   // Run the checkRoles function and send the info needed for the API to check the user for qualified roles
-  checkRoles(interaction, timestamp, host, urlEnd);
+  checkRoles(interaction, timestamp, host, urlEnd, username);
 }

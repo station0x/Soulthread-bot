@@ -20,5 +20,5 @@ const row = new ActionRowBuilder<MessageActionRowComponentBuilder>()
         .addOptions(guildChannels), // Options set from the array of guild channels
 );
 // send the select menu to the user
-await interaction.reply({ content: 'Please select a channel for the Soulthread Embed', ephemeral: false, components: [row] });
+await interaction.reply({ content: 'Please select a channel for the Soulthread Embed', ephemeral: true, components: [row] });
 }
