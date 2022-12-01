@@ -3,7 +3,7 @@ import {
   ChatInputCommandInteraction,
   GuildMember,
 } from "discord.js";
-import { request } from "undici";
+import axios from "axios";
 
 // Export a function that asks the API which roles the user qualifies for
 
@@ -22,11 +22,19 @@ export async function checkRoles(
       const wait = require("node:timers/promises").setTimeout;
       await wait(333);
       // make an API request for the roles the user qualifies for (subscribing for member verification result)
-      const isVerified = new URL(`${host}/api/isVerifiedForRole/`)
-      isVerified.searchParams.set("userHash", require('crypto').createHash('sha256').update(urlEnd).digest("hex"))
-      let { body } = await request(isVerified);
-      // pull the rolesArray from the JSON the API sends back
-      let { rolesPassed } = await body.json();
+
+      const isVerified = (
+        await axios.get(`${host}/api/isVerifiedForRole/`, {
+          params: {
+            userHash: require("crypto")
+              .createHash("sha256")
+              .update(urlEnd)
+              .digest("hex"),
+          },
+        })
+      ).data;
+      // pull the rolesArray from the isVerified object the API sends back
+      let { rolesPassed } = isVerified;
       // assign gatedRoles the role array received from the API
       gatedRoles = rolesPassed;
     } catch (err) {
