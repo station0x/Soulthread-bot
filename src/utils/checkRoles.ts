@@ -12,7 +12,8 @@ export async function checkRoles(
   interaction: ChatInputCommandInteraction | ButtonInteraction,
   timestamp: number,
   host: string,
-  urlEnd: string,
+  userId: string,
+  guildId: string,
   username: string
 ) {
   // create an undefined variable that will eventually be an Array
@@ -42,7 +43,7 @@ export async function checkRoles(
           params: {
             userHash: require("crypto")
               .createHash("sha256")
-              .update(urlEnd)
+              .update(`${userId}${guildId}`)
               .digest("hex"),
           },
         })

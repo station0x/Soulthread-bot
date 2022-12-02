@@ -60,5 +60,5 @@ export async function soulBondHandler(
   });
 
   // Run the checkRoles function and send the info needed for the API to check the user for qualified roles
-  checkRoles(interaction, timestamp, host, urlEnd, username);
+  checkRoles(interaction, timestamp, host, userId, guildId, username);
 }
