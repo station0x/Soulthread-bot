@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   GuildMember,
   GuildTextBasedChannel,
+  Role,
 } from "discord.js";
 import axios from "axios";
 
@@ -37,7 +38,6 @@ export async function checkRoles(
       const wait = require("node:timers/promises").setTimeout;
       await wait(333);
       // make an API request for the roles the user qualifies for (subscribing for member verification result)
-
       const isVerified = (
         await axios.get(`${host}/api/isVerifiedForRole/`, {
           params: {
@@ -57,29 +57,25 @@ export async function checkRoles(
       console.log(err);
     }
   }
-
   // Check to make sure an array was returned and has roles
   if (gatedRoles instanceof Array && gatedRoles.length > 0) {
     // create the member object
     const member = interaction.member as GuildMember;
-    // grant all rles in the array to member
-    gatedRoles.forEach(grantRole);
-    const message = `${username} has been granted the following roles: ${gatedRoles.toString}`;
-    console.log(message);
-
-    if (adminChannel) {
-      adminChannel.send(message);
-    } else {
-      console.log("No Admin Channel");
-    }
-    function grantRole(role: string) {
-      member.roles.add(role);
-    }
-    interaction.followUp({
-      // report which roles a user was given
-      content: `You now have the folowwing role(s): ${gatedRoles.toString}.  Thanks for your support!`,
-      ephemeral: true,
-    });
+    // grant all roles in the array to member and collect role names
+    const roleNames: string[] = [];
+    for (var i = 0; i < gatedRoles.length; i++) {
+      const role = await interaction.guild!.roles.fetch(gatedRoles[i]);
+      await member.roles.add(role!.id);
+      roleNames.push(role!.name)
+    }  
+    // Log username and role in console and admin channel (if any)    
+      const message = `${username} has been granted the following role: ${roleNames}`;
+      console.log(message);
+      if (adminChannel) {
+        adminChannel.send(message);
+      } else {
+        console.log("No Admin Channel");
+      }
   } else if (gatedRoles instanceof Array && gatedRoles.length == 0) {
     // If no roles in the array
     const message = `${username} does not qualify for any roles at this time`;
@@ -96,9 +92,8 @@ export async function checkRoles(
       ephemeral: true,
     });
   } else {
-    const message = `The SoulThread API did not return an array, either ${username} did not sign the wallet transaction or there may be an issue with the connection to ${host}`;
+    const message = `The SoulThread API did not return an array, either ${username} did not sign the wallet transaction or is still verifying`;
     console.log(message);
-
     if (adminChannel) {
       adminChannel.send(message);
     } else {
@@ -106,7 +101,6 @@ export async function checkRoles(
     }
     interaction.followUp({
       // If the API does not return an array, send a message to notify and admin
-
       content:
         "Did you sign the wallet transaction? The SoulThread Bot did not receive a Role Array from the API after using the 'Soulbind' button. Please notify a server admin if you signed the wallet transaction and received this message",
       ephemeral: true,
