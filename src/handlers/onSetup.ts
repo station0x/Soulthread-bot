@@ -1,4 +1,3 @@
-import { EmbedBuilder } from "@discordjs/builders";
 import {
   ChatInputCommandInteraction,
   ActionRowBuilder,
@@ -21,10 +20,9 @@ export async function handleWelcomeEmbed(
   if (channel.isTextBased()) {
     // Use the getHost function to get the hostname from the .env
     const host = await getHost();
-    const embed = await welcomeEmbed() as EmbedBuilder;
     channel.send({
       // Send the Welcome Embed to the channel
-      embeds: [embed],
+      embeds: [welcomeEmbed(interaction)],
       // Send buttons below
       components: [
         // Create a row builder to add the Soul Bond and Docs buttons
