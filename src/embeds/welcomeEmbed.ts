@@ -1,13 +1,15 @@
 import {
-  ChatInputCommandInteraction,
+  ActionRowBuilder,
+  ButtonBuilder,
   EmbedBuilder,
-  SelectMenuInteraction,
+  GuildBasedChannel,
+  GuildTextBasedChannel,
 } from "discord.js";
+import { setupButtonData } from "../buttons/setup";
 
 // Create the Weclome Embed, passing it the command interaction
 
-export function welcomeEmbed(
-  interaction: ChatInputCommandInteraction | SelectMenuInteraction
+export async function welcomeEmbed(channel?: GuildTextBasedChannel
 ) {
   // Create the initial embed
   const embed = new EmbedBuilder()
@@ -26,6 +28,22 @@ export function welcomeEmbed(
       `Start the soulbinding process by clicking the 'Soul Bond' button below.`
     )
     .setColor("Aqua") // Embed Color
-    .setTitle(`Welcome to ${interaction.guild!.name}`); // Embed Title
+    .setTitle(`Create a Soul Bond`); // Embed Title
+
+    if (channel) {
+      await channel.send({
+        // Send the Welcome Embed to the channel
+        embeds: [embed],
+        // Send buttons below
+        components: [
+          // Create a row builder to add the Soul Bond and Docs buttons
+          new ActionRowBuilder<ButtonBuilder>().setComponents(
+            setupButtonData(), // add the Setup button
+          ),
+        ],
+      });
+    }
+    else {
   return embed; // return the embed
+}
 }

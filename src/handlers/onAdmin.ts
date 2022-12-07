@@ -17,7 +17,6 @@ import { setupButtonData } from "../buttons/setup";
 
   ) {
     if (channel.isTextBased()) {
-      const button =
       channel.send({
         // Send the Welcome Embed to the channel
         embeds: [adminEmbed(channel.guild.name)],

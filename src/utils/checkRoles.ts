@@ -53,6 +53,16 @@ export async function checkRoles(
       // assign gatedRoles the role array received from the API
       gatedRoles = rolesPassed;
     } catch (err) {
+      if (adminChannel) {
+        interaction.followUp({
+          // report that there was an issue
+          content: `There was an issue reaching the host, please contact the server admin`,
+          ephemeral: true,
+        });
+        adminChannel.send(err as string);
+      } else {
+        console.log("No Admin Channel");
+      }
       // log any errors
       console.log(err);
     }
@@ -63,19 +73,33 @@ export async function checkRoles(
     const member = interaction.member as GuildMember;
     // grant all roles in the array to member and collect role names
     const roleNames: string[] = [];
+    const ownedRoleNames: string[] = [];
     for (var i = 0; i < gatedRoles.length; i++) {
-      const role = await interaction.guild!.roles.fetch(gatedRoles[i]);
-      await member.roles.add(role!.id);
-      roleNames.push(role!.name)
+      const role = await interaction.guild!.roles.fetch(gatedRoles[i]) as Role;
+      if (member.roles.cache.has(gatedRoles[i])) {
+        ownedRoleNames.push(role.name);
+      } else {
+      await member.roles.add(role.id);
+      roleNames.push(role.name)}
     }  
-    // Log username and role in console and admin channel (if any)    
-      const message = `${username} has been granted the following role: ${roleNames}`;
+    // Log username and role in console and admin channel (if any)  
+    if (ownedRoleNames.length > 0) { 
+      const message = `${username} already the following role(s): ${ownedRoleNames}`;
       console.log(message);
       if (adminChannel) {
         adminChannel.send(message);
       } else {
         console.log("No Admin Channel");
-      }
+      }}
+      if (roleNames.length > 0) { 
+        const message = `${username} has been granted the following role(s): ${roleNames}`;
+        console.log(message);
+        if (adminChannel) {
+          adminChannel.send(message);
+        } else {
+          console.log("No Admin Channel");
+        }}
+
   } else if (gatedRoles instanceof Array && gatedRoles.length == 0) {
     // If no roles in the array
     const message = `${username} does not qualify for any roles at this time`;
