@@ -1,14 +1,10 @@
 import {
-  ChatInputCommandInteraction,
   EmbedBuilder,
-  SelectMenuInteraction,
 } from "discord.js";
 
 // Create the Weclome Embed, passing it the command interaction
 
-export function welcomeEmbed(
-  interaction: ChatInputCommandInteraction | SelectMenuInteraction
-) {
+export function welcomeEmbed() {
   // Create the initial embed
   const embed = new EmbedBuilder()
     // Embed Thumbnail
@@ -26,6 +22,6 @@ export function welcomeEmbed(
       `Start the soulbinding process by clicking the 'Soul Bond' button below.`
     )
     .setColor("Aqua") // Embed Color
-    .setTitle(`Welcome to ${interaction.guild!.name}`); // Embed Title
+    .setTitle(`Create a Soul Bond and connect your Fantom Opera assets with Discord!`); // Embed Title
   return embed; // return the embed
 }

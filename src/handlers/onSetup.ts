@@ -14,15 +14,15 @@ import { getHost } from "../utils/getValues";
 // export a function that creates and sends the Welcome Embed in a channel chosen by the admin
 
 export async function handleWelcomeEmbed(
-  interaction: ChatInputCommandInteraction | SelectMenuInteraction,
-  channel: GuildTextBasedChannel | GuildBasedChannel
+  channel: GuildTextBasedChannel | GuildBasedChannel,
+  interaction?: ChatInputCommandInteraction | SelectMenuInteraction,
 ) {
   if (channel.isTextBased()) {
     // Use the getHost function to get the hostname from the .env
     const host = await getHost();
     channel.send({
       // Send the Welcome Embed to the channel
-      embeds: [welcomeEmbed(interaction)],
+      embeds: [welcomeEmbed()],
       // Send buttons below
       components: [
         // Create a row builder to add the Soul Bond and Docs buttons
@@ -32,12 +32,11 @@ export async function handleWelcomeEmbed(
         ),
       ],
     });
+    if (interaction){
     interaction.reply({
       // Reply that the embed has been deployed
       content: `Soulthread Embed Successfully deployed in channel: ${channel}!`,
       ephemeral: true,
     });
-  } else {
-    interaction.reply("Please select a Text Channel");
-  }
+  }}
 }

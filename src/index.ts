@@ -1,9 +1,12 @@
 import "dotenv/config";
-import { Client, GatewayIntentBits, GuildTextBasedChannel, GuildBasedChannel, ChannelType, PermissionFlagsBits  } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+} from "discord.js";
 import { onReady } from "./handlers/onReady";
+import { onGuildCreate } from "./handlers/onGuildCreate";
 import { validateEnv } from "./utils/validateEnv";
 import { onInteraction } from "./handlers/onInteraction";
-import { handleAdminEmbed } from "./handlers/onAdmin";
 
 // Index file
 
@@ -21,23 +24,9 @@ import { handleAdminEmbed } from "./handlers/onAdmin";
       async (interaction) => await onInteraction(interaction)
     );
     // Add an admin channel when Soulthread joins a server
-client.on("guildCreate", async guild => {
-  let id = await guild.roles.everyone.id;
-  const channel: GuildTextBasedChannel = await guild.channels.create({
-    name: 'soulthread-admin',
-    type: ChannelType.GuildText,
-    permissionOverwrites: [
-       {
-         id: id,
-         deny: [PermissionFlagsBits.ViewChannel],
-      },
-    ],
-  });
-  await handleAdminEmbed(channel);
-})
+    client.on("guildCreate", async (guild) => await onGuildCreate(guild));
     // log the bot in
     await client.login(process.env.BOT_TOKEN);
- 
   } catch (err) {
     // log any errors
     console.log(err);

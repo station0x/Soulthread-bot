@@ -23,7 +23,7 @@ import {
       })
       // Embed Description
       .setDescription(
-        `Use the **Setup** button below to send the Welcome Embed to a channel of your choosing!.`
+        `Use the \`/setup\` command to send the Welcome Embed to a channel of your choosing!.`
       )
       .setColor("Aqua") // Embed Color
       .setTitle(`Welcome to ${guildName}`); // Embed Title

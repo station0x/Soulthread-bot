@@ -1,6 +1,7 @@
 import { ActionRowBuilder, BaseGuildTextChannel, ButtonInteraction, GuildBasedChannel, MessageActionRowComponentBuilder, SelectMenuBuilder } from "discord.js";
 
 export async function channelSelect(interaction: ButtonInteraction) {
+  console.log("starting")
       // Create array for channel options
   let guildChannels: { label: string; description: string; value: string }[] = [];
   // Function to add all server channels to an array for options

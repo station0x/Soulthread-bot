@@ -36,7 +36,7 @@ export const onInteraction = async (interaction: Interaction) => {
       case "channelSelect": {
         const channel = interaction.guild!.channels.cache.get(interaction.values[0]);
         // Send the Welcome Embed to the selected channel
-        handleWelcomeEmbed(interaction, channel!)
+        handleWelcomeEmbed(channel!, interaction)
         break;
       }
     }
