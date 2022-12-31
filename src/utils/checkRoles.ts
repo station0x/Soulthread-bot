@@ -84,7 +84,7 @@ export async function checkRoles(
     }  
     // Log username and role in console and admin channel (if any)  
     if (ownedRoleNames.length > 0) { 
-      const message = `${username} already the following role(s): ${ownedRoleNames}`;
+      const message = `${username} **already has** the following role(s): ${ownedRoleNames}`;
       console.log(message);
       if (adminChannel) {
         adminChannel.send(message);
@@ -92,7 +92,7 @@ export async function checkRoles(
         console.log("No Admin Channel");
       }}
       if (roleNames.length > 0) { 
-        const message = `${username} has been granted the following role(s): ${roleNames}`;
+        const message = `${username} has been **granted** the following role(s): ${roleNames}`;
         console.log(message);
         if (adminChannel) {
           adminChannel.send(message);
