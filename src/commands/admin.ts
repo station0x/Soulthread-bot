@@ -8,22 +8,28 @@ export const admin: Command = {
     // Use SlashCommandBuilder to create command
     data: new SlashCommandBuilder()
       .setName("admin") // Command Name
-      .setDescription("Setup Admin Embed") // Command Description
-      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) // Make command for use by Administrator only
-      // create an option for the channel to send the Soulthread embed to
-      .addChannelOption((option) =>
-        option
-          .setName("channel") // Option Name
-          .setDescription("The channel for the verify embed") // Option Description
-          .addChannelTypes(ChannelType.GuildText)
-          .setRequired(true)
-      ),
+      .setDescription("Setup Admin Channel") // Command Description
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator), // Make command for use by Administrator only
     run: async (interaction) => {
-      // Get the chosen channel from the options
-      const channel = interaction.options.getChannel(
-        "channel"
+      let id = interaction.guild!.roles.everyone.id;
+
+      const findAdminChannel = interaction.guild!.channels.cache.find(
+        (ch: { name: string }) => ch.name === "soulthread-admin"
       ) as GuildTextBasedChannel;
-      // Run the handleWelcomeEmbed to create and send the Welcome Embed
-      handleAdminEmbed(channel, interaction);
+      if (!findAdminChannel) {
+        const adminChannel: GuildTextBasedChannel = await interaction.guild!.channels.create(
+          {
+            name: "soulthread-admin",
+            type: ChannelType.GuildText,
+            permissionOverwrites: [
+              {
+                id: id,
+                deny: [PermissionFlagsBits.ViewChannel],
+              },
+            ],
+          }
+        );
+        await handleAdminEmbed(adminChannel);
+      }
     },
   };
