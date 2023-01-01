@@ -30,7 +30,7 @@ npm start
 ```
 ## Usage
 
-Once the bot is added to a server, it will automatically create a channel called `#soulthread-connect`, containing an embed for users to create and sign a (gasless) blockchain message that will associate the Discord user with their Fantom Opera tokens. It will also create a channel called `#soulthread-admin`, which will keep usage logs. 
+Once the bot is added to a server, it will automatically create a channel called `# soulthread-connect`, containing an embed for users to create and sign a (gasless) blockchain message that will associate the Discord user with their Fantom Opera tokens. It will also create a channel called `# soulthread-admin`, which will keep usage logs. 
 
 - You can add the connection embed to any channel using the `/setup` command.
 - You can re-create the admin channel using the command `/admin`.
