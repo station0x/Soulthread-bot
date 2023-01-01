@@ -7,12 +7,12 @@ SoulThread is a Discord bot that connects members of your Discord community with
 To install and run SoulThread, you will need to follow these steps:
 
 1. Make sure you have Node.js and NPM installed on your machine.
-2. Clone the SoulThread repository to your local machine: `git clone https://github.com/station0x/Soulthread-bot.git`
-3. Navigate to the root directory of the repository: `cd Soulthread-bot`
+2. Clone the SoulThread repository to your local machine: ```git clone https://github.com/station0x/Soulthread-bot.git```
+3. Navigate to the root directory of the repository: ```cd Soulthread-bot```
 4. Create a new file called `.env` using `.env.example` as a template. Enter your Discord Bot Token (`BOT_TOKEN`) and your Discord Bot Client ID (`CLIENT_ID`) in this file.
-5. Install the necessary dependencies: `npm i`
-6. Build the source code: `npm run build`
-7. Start the bot: `npm start`
+5. Install the necessary dependencies: ```npm i```
+6. Build the source code: ```npm run build```
+7. Start the bot: ```npm start```
 
 ## Usage
 
