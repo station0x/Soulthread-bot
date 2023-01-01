@@ -20,7 +20,7 @@ git clone https://github.com/station0x/Soulthread-bot.git
 ```bash
 npm i
 ```
-6. Build the source code: 
+6. Build the bot: 
 ```bash
 npm run build
 ```
