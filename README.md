@@ -3,7 +3,7 @@
 
 # Installation
 ## To install and run SoulThread, you will need to follow these steps:
-
+- Make sure you have Node.js and NPM installed
 - Clone the SoulThread repository to your local machine: git clone https://github.com/station0x/Soulthread-bot.git
 - Navigate to the root directory of the repository: cd Soulthread-bot
 - Create a new file called .env using .env.example as a template. 
