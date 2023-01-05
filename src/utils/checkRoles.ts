@@ -83,7 +83,12 @@ export async function checkRoles(
       roleNames.push(role.name)}
     }  
     // Log username and role in console and admin channel (if any)  
-    if (ownedRoleNames.length > 0) { 
+    if (ownedRoleNames.length > 0) {
+      interaction.followUp({
+        // report to the user which roles they already have
+        content: `You **already have** the following roles: ${ownedRoleNames}`,
+        ephemeral: true,
+      });
       const message = `${username} **already has** the following role(s): ${ownedRoleNames}`;
       console.log(message);
       if (adminChannel) {
@@ -91,7 +96,12 @@ export async function checkRoles(
       } else {
         console.log("No Admin Channel");
       }}
-      if (roleNames.length > 0) { 
+      if (roleNames.length > 0) {
+        interaction.followUp({
+          // report the roles the user has just been granted
+          content: `You have been **granted** the following roles: ${roleNames}`,
+          ephemeral: true,
+        });
         const message = `${username} has been **granted** the following role(s): ${roleNames}`;
         console.log(message);
         if (adminChannel) {
